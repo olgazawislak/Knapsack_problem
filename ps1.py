@@ -54,27 +54,20 @@ def greedy_cow_transport(cows, limit=10):
     transported on a particular trip and the overall list containing all the
     trips
     """
-    transport = [[]]
+    transport = []
     cows_copy = cows.copy()
     trips = 0
-    while cows_copy:
-        delete = []
-        lowest_weight = min(cows_copy, key=lambda x: cows_copy.get(x))
+    while True:
+        transport.append([])
         for key, value in sorted(cows_copy.items(), key=lambda x: x[1], reverse=True):
-            if value <= limit:
+            if value <= limit and value != 0:
                 transport[trips].append(key)
                 limit -= value
-                delete.append(key)
-
-        if limit == 0 or cows_copy[lowest_weight] > limit:
-            limit = 10
-            trips += 1
-            transport.append([])
-
-        for i in delete:
-            del cows_copy[i]
-
-    print(lowest_weight)
+                cows_copy[key] = 0
+        if all(value == 0 for value in cows_copy.values()):
+            break
+        limit = 10
+        trips += 1
     return transport
 
 
@@ -129,7 +122,7 @@ lines to print the result of your problem.
 """
 
 cows = load_cows("ps1_cow_data.txt")
-limit=100
+limit = 10
 print(cows)
 
 print(greedy_cow_transport(cows, limit))
