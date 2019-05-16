@@ -4,9 +4,10 @@
 from ps1_partition import get_partitions
 import time
 
-#================================
+
+# ================================
 # Part A: Transporting Space Cows
-#================================
+# ================================
 
 def load_cows(filename):
     """
@@ -24,7 +25,6 @@ def load_cows(filename):
     cow_dict = dict()
 
     with open(filename, 'r') as f:
-    
         for line in f:
             line_data = line.split(',')
             cow_dict[line_data[0]] = int(line_data[1])
@@ -32,7 +32,7 @@ def load_cows(filename):
 
 
 # Problem 1
-def greedy_cow_transport(cows, limit=10):
+def greedy_cow_transport(cows, limit):
     """
     Uses a greedy heuristic to determine an allocation of cows that attempts to
     minimize the number of spaceship trips needed to transport all the cows. The
@@ -57,6 +57,7 @@ def greedy_cow_transport(cows, limit=10):
     transport = []
     cows_copy = cows.copy()
     trips = 0
+    defined_limit = limit
     while True:
         transport.append([])
         for key, value in sorted(cows_copy.items(), key=lambda x: x[1], reverse=True):
@@ -64,16 +65,15 @@ def greedy_cow_transport(cows, limit=10):
                 transport[trips].append(key)
                 limit -= value
                 cows_copy[key] = 0
-        if all(value == 0 for value in cows_copy.values()):
+        if all((value == 0 or value > defined_limit) for value in cows_copy.values()):
             break
-        limit = 10
+        limit = defined_limit
         trips += 1
     return transport
 
 
-
 # Problem 2
-def brute_force_cow_transport(cows,limit=10):
+def brute_force_cow_transport(cows, limit):
     """
     Finds the allocation of cows that minimizes the number of spaceship trips
     via brute force.  The brute force algorithm should follow the following method:
@@ -96,7 +96,7 @@ def brute_force_cow_transport(cows,limit=10):
     # TODO: Your code here
     pass
 
-        
+
 # Problem 3
 def compare_cow_transport_algorithms():
     """
@@ -121,11 +121,9 @@ Do not submit this along with any of your answers. Uncomment the last two
 lines to print the result of your problem.
 """
 
-cows = load_cows("ps1_cow_data.txt")
-limit = 10
-print(cows)
+cows_dict = load_cows("ps1_cow_data.txt")
+cows_limit = 5
+print(cows_dict)
 
-print(greedy_cow_transport(cows, limit))
+print(greedy_cow_transport(cows_dict, cows_limit))
 # print(brute_force_cow_transport(cows, limit))
-
-
